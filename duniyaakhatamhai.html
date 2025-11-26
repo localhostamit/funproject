@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The End is Near</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            color: #fff;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        /* Countdown Container Styling */
+        #countdown-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #ff3b3b; /* Red warning color */
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+        }
+
+        #timer {
+            font-size: 4rem;
+            font-weight: bold;
+            border: 2px solid #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Video Container Styling (Hidden initially) */
+        #video-container {
+            display: none; /* Hidden by default */
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+        }
+
+        video {
+            width: 80%; /* Adjust size as needed */
+            max-width: 800px;
+            border: 5px solid #ff3b3b;
+            box-shadow: 0 0 50px #ff3b3b;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="countdown-container">
+        <h1>Time Remaining</h1>
+        <div id="timer">00:00:00:00</div>
+        <p style="margin-top: 20px; opacity: 0.6;">Wait for May 26...</p>
+    </div>
+
+    <div id="video-container">
+        <video id="endVideo" controls>
+            <source src="meme.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <script>
+        // --- CONFIGURATION ---
+        
+        // SET THE DATE HERE: (Month Day, Year Time)
+        // Currently set to May 26, 2026. 
+        // To test immediately, change this date to a time 5 seconds in the future.
+        const targetDate = new Date("May 26, 2026 00:00:00").getTime();
+
+        // ---------------------
+
+        const timerElement = document.getElementById('timer');
+        const countdownContainer = document.getElementById('countdown-container');
+        const videoContainer = document.getElementById('video-container');
+        const videoElement = document.getElementById('endVideo');
+
+        const countdown = setInterval(function() {
+            const now = new Date().getTime();
+            const gap = targetDate - now;
+
+            // Math for time units
+            const second = 1000;
+            const minute = second * 60;
+            const hour = minute * 60;
+            const day = hour * 24;
+
+            // Calculate display numbers
+            const d = Math.floor(gap / day);
+            const h = Math.floor((gap % day) / hour);
+            const m = Math.floor((gap % hour) / minute);
+            const s = Math.floor((gap % minute) / second);
+
+            // Update the HTML
+            timerElement.innerText = `${d}d ${h}h ${m}m ${s}s`;
+
+            // IF THE COUNTDOWN IS FINISHED
+            if (gap < 0) {
+                clearInterval(countdown);
+                triggerTheEnd();
+            }
+        }, 1000);
+
+        function triggerTheEnd() {
+            // Hide the countdown
+            countdownContainer.style.display = "none";
+            
+            // Show the video container
+            videoContainer.style.display = "flex";
+            
+            // Attempt to autoplay the video
+            videoElement.play().catch(error => {
+                console.log("Autoplay prevented by browser, user must click play.");
+            });
+        }
+    </script>
+</body>
+</html>
